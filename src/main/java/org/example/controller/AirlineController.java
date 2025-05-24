@@ -4,17 +4,19 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Pattern;
 import jakarta.websocket.server.PathParam;
-import org.example.AirlineService;
-import org.example.Constants;
 import org.example.dto.RouteDTO;
+import org.example.dto.RouteResponseDTO;
+import org.example.service.AirlineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,8 +27,7 @@ import java.util.List;
 @Tag(name = "Airline Controller", description = "airline operations")
 public class AirlineController {
 
-    private static final Logger log = LoggerFactory.getLogger(AdminController.class);
-    private static final String AIRPORT_REGEX = Constants.AIRPORT_REGEX;
+    private static final Logger log = LoggerFactory.getLogger(AirlineController.class);
     private final AirlineService airlineService;
 
     @Autowired
@@ -36,31 +37,29 @@ public class AirlineController {
 
     @GetMapping("/route/{routeId}")
     @Operation(description = "get an airline route by id")
-    public RouteDTO getOneRoute(
-            @Pattern(regexp = "[A-Z][0-9]") @PathVariable("routeId") final String routeId,
-            @PathParam(value = "aircraft") final String aircraft) {
+    public ResponseEntity<RouteResponseDTO> getOneRoute(
+            @Pattern(regexp = "[A-Z][0-9]")
+            @PathVariable final long routeId,
+            @PathParam(value = "aircraft") final String aircraft) throws NotFoundException {
         log.info("/route endpoint hit with aircraft {}", aircraft);
-        return airlineService.getRouteById(routeId);
-
+        return ResponseEntity.ok(airlineService.getRouteById(routeId));
     }
 
     @GetMapping("/routes/{fromAirport}")
     @Operation(description = "get all routes by airport")
-    public List<RouteDTO> getRoutesByAirport(
-            @Pattern(regexp = "^[A-Z]{3}$") @PathVariable("from airport") final String fromAirport) {
+    public List<RouteResponseDTO> getRoutesByAirport(
+            @Pattern(regexp = "^[A-Z]{3}$")
+            @PathVariable final String fromAirport) {
         log.info("/route endpoint hit with airport {}", fromAirport);
         return airlineService.getRoutesByAirport(fromAirport);
-
     }
 
     @PostMapping("/route/new")
     @Operation(description = "create a new airline route")
-    public RouteDTO createRoute(
-            @RequestParam final RouteDTO routeDTO) {
-
+    public RouteResponseDTO createRoute(
+            @RequestBody final RouteDTO routeDTO) {
         log.info("/route/new endpoint hit with route {}", routeDTO);
         return airlineService.createRoute(routeDTO);
-
     }
 
 }
