@@ -2,13 +2,13 @@ package org.example.service;
 
 import org.example.db.RouteRepository;
 import org.example.dto.RouteDTO;
-import org.example.dto.RouteResponseDTO;
 import org.example.entity.Route;
 import org.example.mapper.RouteMapper;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AirlineService {
@@ -21,20 +21,21 @@ public class AirlineService {
         this.routeMapper = routeMapper;
     }
 
-    public RouteResponseDTO getRouteById(Long routeId) throws NotFoundException {
+    public RouteDTO getRouteById(UUID routeId) throws NotFoundException {
         Route route = routeRepository.findById(routeId).orElseThrow(NotFoundException::new);
-        return routeMapper.toResponse(route);
+        return routeMapper.toRouteDTO(route);
     }
 
-    public List<RouteResponseDTO> getRoutesByAirport(String fromAirport) {
+    public List<RouteDTO> getRoutesByAirport(String fromAirport) {
         return routeRepository.findByOrigin(fromAirport).stream()
-                .map(routeMapper::toResponse)
+                .map(routeMapper::toRouteDTO)
                 .toList();
     }
 
-    public RouteResponseDTO createRoute(RouteDTO routeDTO) {
-        Route route = routeMapper.toEntity(routeDTO);
-        routeRepository.save(route);
-        return routeMapper.toResponse(route);
+    public RouteDTO createRoute(RouteDTO routeDTO) {
+        routeDTO.setId(null);
+        Route route = routeMapper.toRoute(routeDTO);
+        Route result = routeRepository.save(route);
+        return routeMapper.toRouteDTO(result);
     }
 }
