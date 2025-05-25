@@ -1,5 +1,7 @@
 ## spring app template
 
+| __JaCoCo Test Coverage__ | [![coverage](https://raw.githubusercontent.com/cicirello/Chips-n-Salsa/badges/jacoco.svg)](https://github.com/cicirello/Chips-n-Salsa/actions/workflows/build.yml) |
+|:-------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 ### install
 
 - install jdk 21
@@ -12,3 +14,4 @@
 - inspect the local in memory DB getting updated using:
     - http://localhost:8445/spring-app/h2-console/
         - use the url and login info supplied in application.yaml
+ 
