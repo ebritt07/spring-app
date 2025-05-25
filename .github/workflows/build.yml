@@ -96,13 +96,17 @@ jobs:
 
           COV_DELTA=$(get_delta "$OLD_COVERAGE" "$NEW_COVERAGE")
           BR_DELTA=$(get_delta "$OLD_BRANCHES" "$NEW_BRANCHES")
-
+          OLD_COV=$(awk "BEGIN { printf \"%.2f\", $OLD_COVERAGE }")
+          NEW_COV=$(awk "BEGIN { printf \"%.2f\", $NEW_COVERAGE }")
+          OLD_BR=$(awk "BEGIN { printf \"%.2f\", $OLD_BRANCHES }")
+          NEW_BR=$(awk "BEGIN { printf \"%.2f\", $NEW_BRANCHES }")
+  
           BODY=$(cat <<EOF
           ##⛑️ JaCoCo Test Coverage Summary
           | Metric   | Before PR | After PR | Change   |
           |----------|-----------|----------|----------|
-          | Coverage | ${OLD_COVERAGE}% | ${NEW_COVERAGE}% | ${COV_DELTA} |
-          | Branches | ${OLD_BRANCHES}% | ${NEW_BRANCHES}% | ${BR_DELTA} |
+          | Coverage | ${OLD_COV}% | ${NEW_COV}% | ${COV_DELTA} |
+          | Branches | ${OLD_BR}% | ${NEW_BR}% | ${BR_DELTA} |
           EOF
           )
           echo "$BODY"
