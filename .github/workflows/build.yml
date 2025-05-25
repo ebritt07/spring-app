@@ -75,6 +75,8 @@ jobs:
 
       - name: Comment on PR with coverage percentages and delta
         if: ${{ github.event_name == 'pull_request' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           REMOTE_URL="https://raw.githubusercontent.com/ebritt07/spring-app/badges/coverage-summary.json"
           curl -s -o old_report.json "$REMOTE_URL"
@@ -100,7 +102,7 @@ jobs:
           NEW_COV=$(awk "BEGIN { printf \"%.2f\", $NEW_COVERAGE }")
           OLD_BR=$(awk "BEGIN { printf \"%.2f\", $OLD_BRANCHES }")
           NEW_BR=$(awk "BEGIN { printf \"%.2f\", $NEW_BRANCHES }")
-  
+          
           BODY=$(cat <<EOF
           ## ⛑️ JaCoCo Test Coverage Summary
           | Metric   | Before PR | After PR | Change   |
@@ -112,4 +114,3 @@ jobs:
           echo "$BODY"
           gh pr comment ${{github.event.pull_request.number}} --create-if-none --edit-last -b "${BODY}"
         continue-on-error: true
-
