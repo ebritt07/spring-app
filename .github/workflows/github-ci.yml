@@ -61,6 +61,8 @@ jobs:
 
     - name: Commit and push the coverage badges and summary file
       if: ${{ github.event_name != 'pull_request' }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         cd badges
         if [[ `git status --porcelain *.svg *.json` ]]; then
