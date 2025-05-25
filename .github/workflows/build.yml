@@ -75,9 +75,6 @@ jobs:
 
       - name: Comment on PR with coverage percentages and delta
         if: ${{ github.event_name == 'pull_request' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           REMOTE_URL="https://raw.githubusercontent.com/ebritt07/spring-app/badges/coverage-summary.json"
           curl -s -o old_report.json "$REMOTE_URL"
@@ -113,13 +110,6 @@ jobs:
           EOF
           )
           echo "$BODY"
-          
-          COMMENT_ID=$(gh pr view "$PR_NUMBER" --json comments -q \
-            '.comments[] | select(.body | contains("⛑️ JaCoCo Test Coverage Summary")) | .id')
-          if [[ -n "$COMMENT_ID" ]]; then
-            gh pr comment "$PR_NUMBER" --edit "$COMMENT_ID" -b "$BODY"
-          else
-            gh pr comment "$PR_NUMBER" -b "$BODY"
-          fi
+          gh pr comment ${{github.event.pull_request.number}} --create-if-none --edit-last -b "${BODY}"
         continue-on-error: true
 
