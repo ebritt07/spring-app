@@ -28,6 +28,7 @@ import static org.example.util.Constants.SAME_ORIGIN_DESTINATION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
@@ -79,7 +80,12 @@ public class TestRouteControllerE2E {
     @Order(2)
     public void testGetEmptyRoute() {
         String url = baseUrl + "/" + FAKE_UUID;
-        assertEquals(HttpStatus.NO_CONTENT, restTemplate.getForEntity(url, RouteDTO.class).getStatusCode());
+        try {
+            restTemplate.getForEntity(url, RouteDTO.class);
+            fail("Expected a 404 response");
+        } catch (HttpClientErrorException e) {
+            assertEquals(NOT_FOUND, e.getStatusCode());
+        }
     }
 
     @Test
@@ -117,10 +123,17 @@ public class TestRouteControllerE2E {
     public void testUpdateEmptyRoute() {
         String url = baseUrl + "/" + FAKE_UUID;
         HttpEntity<RouteDTO> putRequest = new HttpEntity<>(routeDTO);
-        assertEquals(HttpStatus.NO_CONTENT, restTemplate.exchange(
-                        url, HttpMethod.PUT, putRequest, RouteDTO.class)
-                .getStatusCode()
-        );
+        try {
+            restTemplate.exchange(
+                    url,
+                    HttpMethod.PUT,
+                    putRequest,
+                    RouteDTO.class
+            );
+            fail("Expected a 404 response");
+        } catch (HttpClientErrorException e) {
+            assertEquals(NOT_FOUND, e.getStatusCode());
+        }
     }
 
     @Test

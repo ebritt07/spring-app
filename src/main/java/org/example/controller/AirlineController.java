@@ -3,11 +3,10 @@ package org.example.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.example.dto.RouteDTO;
 import org.example.dto.RouteDTOBase;
 import org.example.service.AirlineService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,9 +26,9 @@ import java.util.UUID;
 @Validated
 @Tag(name = "Airline Controller", description = "airline operations")
 @RequestMapping("/route")
+@Slf4j
 public class AirlineController {
 
-    private static final Logger log = LoggerFactory.getLogger(AirlineController.class);
     private final AirlineService airlineService;
 
     @Autowired
@@ -41,10 +40,10 @@ public class AirlineController {
     @Operation(description = "get an airline route by id")
     public ResponseEntity<RouteDTO> getOneRoute(
             @PathVariable final UUID routeId) {
-        log.info("/route endpoint hit with routeId {}", routeId);
+        log.info("/route (GET) hit with routeId {}", routeId);
         return airlineService.getRouteById(routeId)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.noContent().build());
+                .orElse(ResponseEntity.notFound().build());
 
     }
 
@@ -74,7 +73,7 @@ public class AirlineController {
         log.info("/route (PUT) hit with route {}", routeDTO);
         return airlineService.updateRoute(routeId, routeDTO)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.noContent().build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
 

@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = ScheduleMapper.class)
 public interface RouteMapper {
-    Route toRoute(RouteDTO routeDTO);
 
     @Mapping(target = "id", ignore = true)
     Route toRoute(RouteDTOBase routeDTOBase);
