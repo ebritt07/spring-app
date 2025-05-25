@@ -98,13 +98,13 @@ jobs:
           BR_DELTA=$(get_delta "$OLD_BRANCHES" "$NEW_BRANCHES")
 
           BODY=$(cat <<EOF
-            ##⛑️ JaCoCo Test Coverage Summary
-              | Metric   | Before PR | After PR | Change   |
-              |----------|-----------|----------|----------|
-              | Coverage | ${OLD_COVERAGE}% | ${NEW_COVERAGE}% | ${COV_DELTA} |
-              | Branches | ${OLD_BRANCHES}% | ${NEW_BRANCHES}% | ${BR_DELTA} |
-              EOF
-              )
+          ##⛑️ JaCoCo Test Coverage Summary
+          | Metric   | Before PR | After PR | Change   |
+          |----------|-----------|----------|----------|
+          | Coverage | ${OLD_COVERAGE}% | ${NEW_COVERAGE}% | ${COV_DELTA} |
+          | Branches | ${OLD_BRANCHES}% | ${NEW_BRANCHES}% | ${BR_DELTA} |
+          EOF
+          )
           echo "$BODY"
           gh pr comment ${{github.event.pull_request.number}} -b "${BODY}"
         continue-on-error: true
