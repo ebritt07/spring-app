@@ -28,11 +28,11 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -B clean verify
 
     - name: jacoco-badge-generator
       uses: cicirello/jacoco-badge-generator@v2.12.0
       with:
         jacoco-csv-file: target/site/jacoco/jacoco.csv
         generate-coverage-badge: true
-        generate-coverage-summary: true
+        generate-summary: true
