@@ -21,5 +21,5 @@ public class Route {
     Schedule schedule;
     @Id
     @GeneratedValue
-    private UUID id;
+    UUID id;
 }

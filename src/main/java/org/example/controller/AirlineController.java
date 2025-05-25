@@ -2,17 +2,19 @@ package org.example.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.example.dto.RouteDTO;
+import org.example.dto.RouteDTOBase;
 import org.example.service.AirlineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,9 +40,12 @@ public class AirlineController {
     @GetMapping("/{routeId}")
     @Operation(description = "get an airline route by id")
     public ResponseEntity<RouteDTO> getOneRoute(
-            @PathVariable final UUID routeId) throws NotFoundException {
+            @PathVariable final UUID routeId) {
         log.info("/route endpoint hit with routeId {}", routeId);
-        return ResponseEntity.ok(airlineService.getRouteById(routeId));
+        return airlineService.getRouteById(routeId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
+
     }
 
     @GetMapping("/airport/{fromAirport}")
@@ -51,12 +56,26 @@ public class AirlineController {
         return airlineService.getRoutesByAirport(fromAirport);
     }
 
-    @PostMapping("/new")
+    @PostMapping
     @Operation(description = "create a new airline route")
-    public RouteDTO createRoute(
-            @RequestBody final RouteDTO routeDTO) {
-        log.info("/route/new endpoint hit with route {}", routeDTO);
-        return airlineService.createRoute(routeDTO);
+    public ResponseEntity<RouteDTO> createRoute(
+            @RequestBody
+            @Valid final RouteDTOBase routeDTO) {
+        log.info("/route (POST) hit with route {}", routeDTO);
+        return ResponseEntity.ok(airlineService.createRoute(routeDTO));
     }
+
+    @PutMapping("/{routeId}")
+    @Operation(description = "update an existing airline route")
+    public ResponseEntity<RouteDTO> updateRoute(
+            @PathVariable final UUID routeId,
+            @RequestBody
+            @Valid final RouteDTOBase routeDTO) {
+        log.info("/route (PUT) hit with route {}", routeDTO);
+        return airlineService.updateRoute(routeId, routeDTO)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
+    }
+
 
 }

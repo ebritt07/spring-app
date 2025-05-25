@@ -1,22 +1,18 @@
 package org.example.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 @Data
-@Builder
-public class RouteDTO {
-    @JsonProperty
-    String aircraft;
-    @JsonProperty
-    String origin;
-    @JsonProperty
-    String destination;
-    @JsonProperty
-    ScheduleDTO schedule;
+@NoArgsConstructor
+public class RouteDTO extends RouteDTOBase {
     @JsonProperty
     UUID id;
 }

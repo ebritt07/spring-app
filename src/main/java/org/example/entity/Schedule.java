@@ -15,5 +15,5 @@ public class Schedule {
     Set<String> weeklySchedule;
     @Id
     @GeneratedValue
-    private UUID id;
+    UUID id;
 }
