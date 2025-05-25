@@ -14,13 +14,16 @@ on:
   pull_request:
     branches: [ "master" ]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
@@ -30,11 +33,41 @@ jobs:
     - name: Build with Maven
       run: mvn -B clean verify
 
-    - name: jacoco-badge-generator
+    - name: Summarize Jacoco Results
       uses: cicirello/jacoco-badge-generator@v2.12.0
       with:
         jacoco-csv-file: target/site/jacoco/jacoco.csv
         generate-summary: true
+
+    - name: Read coverage summary
+      id: coverage-summary
+      run: |
+        summary=$(cat ${{ steps.jacoco.outputs.summary-file }})
+        # Use printf to preserve formatting and write to GITHUB_OUTPUT
+        echo "summary<<EOF" >> $GITHUB_OUTPUT
+        printf "%s\n" "$summary" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Comment or update PR with coverage summary
+      if: github.event_name == 'pull_request'
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          ## ⛑️️ Code Coverage Report
+          ${{ steps.coverage-summary.outputs.summary }}
+        comment-id: ${{ steps.find-comment.outputs.comment-id }}
+        edit-mode: replace
+
+    - name: Find previous comment (if exists)
+      if: github.event_name == 'pull_request'
+      id: find-comment
+      uses: peter-evans/find-comment@v3
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: '## ⛑️️ Code Coverage Report'
 
     - name: Upload JaCoCo coverage report
       uses: actions/upload-artifact@v4
