@@ -2,6 +2,7 @@
 
 | __JaCoCo Test Coverage__ | [![coverage](https://raw.githubusercontent.com/ebritt07/spring-app/badges/jacoco.svg)](https://github.com/ebritt07/spring-app/actions/workflows/build.yml) |
 |:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+
 ### install
 
 - install jdk 21
@@ -14,4 +15,3 @@
 - inspect the local in memory DB getting updated using:
     - http://localhost:8445/spring-app/h2-console/
         - use the url and login info supplied in application.yaml
- 
