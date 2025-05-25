@@ -102,7 +102,7 @@ jobs:
           NEW_BR=$(awk "BEGIN { printf \"%.2f\", $NEW_BRANCHES }")
   
           BODY=$(cat <<EOF
-          ##⛑️ JaCoCo Test Coverage Summary
+          ## ⛑️ JaCoCo Test Coverage Summary
           | Metric   | Before PR | After PR | Change   |
           |----------|-----------|----------|----------|
           | Coverage | ${OLD_COV}% | ${NEW_COV}% | ${COV_DELTA}% |
