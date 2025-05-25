@@ -30,14 +30,5 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
-      with:
-        files: target/site/jacoco/jacoco.xml
-        name: codecov-coverage
-
-    - name: Save test results folder
-      uses: actions/upload-artifact@v3
-      with:
-        name: test-report-folder
-        path: target/site/jacoco
+    - name: jacoco-badge-generator
+      uses: cicirello/jacoco-badge-generator@v2.12.0
