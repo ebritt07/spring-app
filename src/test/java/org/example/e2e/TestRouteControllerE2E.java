@@ -1,7 +1,6 @@
 package org.example.e2e;
 
 import org.example.db.RouteRepository;
-import org.example.dto.ErrorDTO;
 import org.example.dto.RouteDTO;
 import org.example.dto.RouteDTOBase;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.UUID;
 
 import static org.example.testutil.TestUtil.getOneRoute;
-import static org.example.util.Constants.SAME_ORIGIN_DESTINATION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
