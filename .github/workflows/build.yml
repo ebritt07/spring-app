@@ -73,14 +73,39 @@ jobs:
           git push
           fi
 
-      - name: Comment on PR with coverage percentages
+      - name: Comment on PR with coverage percentages and delta
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          REPORT=$(<badges/coverage-summary.json)
-          COVERAGE=$(jq -r '.coverage' <<< "$REPORT")%
-          BRANCHES=$(jq -r '.branches' <<< "$REPORT")%
-          NEWLINE=$'\n'
-          BODY="###⛑️ JaCoCo Test Coverage Summary Statistics${NEWLINE}* __Coverage:__ ${COVERAGE}${NEWLINE}* __Branches:__ ${BRANCHES}"
+          REMOTE_URL="https://raw.githubusercontent.com/ebritt07/spring-app/badges/coverage-summary.json"
+          curl -s -o old_report.json "$REMOTE_URL"
+          OLD_COVERAGE=$(jq -r '.coverage' old_report.json)
+          OLD_BRANCHES=$(jq -r '.branches' old_report.json)
+          NEW_COVERAGE=$(jq -r '.coverage' badges/coverage-summary.json)
+          NEW_BRANCHES=$(jq -r '.branches' badges/coverage-summary.json)
+
+          get_delta() {
+            old=$1
+            new=$2
+            delta=$(awk "BEGIN { printf \"%.1f\", $new - $old }")
+            if (( $(echo "$delta > 0.1" | bc -l) )); then
+              echo "🟢 +${delta}%"
+            else
+              echo "🔴 ${delta}%"
+            fi
+          }
+
+          COV_DELTA=$(get_delta "$OLD_COVERAGE" "$NEW_COVERAGE")
+          BR_DELTA=$(get_delta "$OLD_BRANCHES" "$NEW_BRANCHES")
+
+          BODY=$(cat <<EOF
+            ##⛑️ JaCoCo Test Coverage Summary
+              | Metric   | Before PR | After PR | Change   |
+              |----------|-----------|----------|----------|
+              | Coverage | ${OLD_COVERAGE}% | ${NEW_COVERAGE}% | ${COV_DELTA} |
+              | Branches | ${OLD_BRANCHES}% | ${NEW_BRANCHES}% | ${BR_DELTA} |
+              EOF
+              )
+          echo "$BODY"
           gh pr comment ${{github.event.pull_request.number}} -b "${BODY}"
         continue-on-error: true
         env:
