@@ -87,7 +87,7 @@ jobs:
             old=$1
             new=$2
             delta=$(awk "BEGIN { printf \"%.1f\", $new - $old }")
-            if (( $(echo "$delta > 0.1" | bc -l) )); then
+            if (( $(echo "$delta >= 0.0" | bc -l) )); then
               echo "🟢 +${delta}"
             else
               echo "🔴 ${delta}"
