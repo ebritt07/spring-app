@@ -1,5 +1,4 @@
 ## spring app template
-![Coverage](.github/badges/jacoco.svg)
 
 ### install
 
