@@ -107,78 +107,78 @@ public class TestRouteControllerE2E {
         saveTestData(putResult);
     }
 
-//    @Test
-//    @Order(4)
-//    public void testGetUpdatedRoute() {
-//        String url = baseUrl + "/" + this.routeDTO.getId();
-//        ResponseEntity<RouteDTO> getResponse = restTemplate.getForEntity(url, RouteDTO.class);
-//        assertEquals(HttpStatus.OK, getResponse.getStatusCode());
-//        RouteDTO getResult = getResponse.getBody();
-//        assertNotNull(getResult);
-//        assertEquals(routeDTO, getResult);
-//    }
-//
-//    @Test
-//    @Order(5)
-//    public void testUpdateEmptyRoute() {
-//        String url = baseUrl + "/" + FAKE_UUID;
-//        HttpEntity<RouteDTO> putRequest = new HttpEntity<>(routeDTO);
-//        try {
-//            restTemplate.exchange(
-//                    url,
-//                    HttpMethod.PUT,
-//                    putRequest,
-//                    RouteDTO.class
-//            );
-//            fail("Expected a 404 response");
-//        } catch (HttpClientErrorException e) {
-//            assertEquals(NOT_FOUND, e.getStatusCode());
-//        }
-//    }
-//
-//    @Test
-//    @Order(6)
-//    public void testSaveBadRoute() {
-//        RouteDTOBase newRoute = getOneRoute();
-//        newRoute.setDestination("SFO");
-//        newRoute.setOrigin("SFO");
-//        HttpEntity<RouteDTOBase> request = new HttpEntity<>(newRoute);
-//        try {
-//            restTemplate.exchange(
-//                    baseUrl,
-//                    HttpMethod.POST,
-//                    request,
-//                    RouteDTO.class
-//            );
-//            fail("Expected a 400 response");
-//        } catch (HttpClientErrorException e) {
-//            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-//            ErrorDTO errorResult = e.getResponseBodyAs(ErrorDTO.class);
-//            assertNotNull(errorResult);
-//            assertEquals(SAME_ORIGIN_DESTINATION, errorResult.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    @Order(7)
-//    public void testMakeBadUpdate() {
-//        String url = baseUrl + "/" + this.routeDTO.getId();
-//        this.routeDTO.setOrigin("abcdefg");
-//        HttpEntity<RouteDTO> putRequest = new HttpEntity<>(routeDTO);
-//        try {
-//            restTemplate.exchange(
-//                    url,
-//                    HttpMethod.PUT,
-//                    putRequest,
-//                    RouteDTO.class
-//            );
-//            fail("Expected a 400 response");
-//        } catch (HttpClientErrorException e) {
-//            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-//            ErrorDTO errorResult = e.getResponseBodyAs(ErrorDTO.class);
-//            assertNotNull(errorResult);
-//            assertEquals("origin", errorResult.getValidationErrors().getFirst().getField());
-//            assertEquals("Airport must be 3 letter IATA code", errorResult.getValidationErrors().getFirst().getError());
-//        }
-//    }
+    @Test
+    @Order(4)
+    public void testGetUpdatedRoute() {
+        String url = baseUrl + "/" + this.routeDTO.getId();
+        ResponseEntity<RouteDTO> getResponse = restTemplate.getForEntity(url, RouteDTO.class);
+        assertEquals(HttpStatus.OK, getResponse.getStatusCode());
+        RouteDTO getResult = getResponse.getBody();
+        assertNotNull(getResult);
+        assertEquals(routeDTO, getResult);
+    }
+
+    @Test
+    @Order(5)
+    public void testUpdateEmptyRoute() {
+        String url = baseUrl + "/" + FAKE_UUID;
+        HttpEntity<RouteDTO> putRequest = new HttpEntity<>(routeDTO);
+        try {
+            restTemplate.exchange(
+                    url,
+                    HttpMethod.PUT,
+                    putRequest,
+                    RouteDTO.class
+            );
+            fail("Expected a 404 response");
+        } catch (HttpClientErrorException e) {
+            assertEquals(NOT_FOUND, e.getStatusCode());
+        }
+    }
+
+    @Test
+    @Order(6)
+    public void testSaveBadRoute() {
+        RouteDTOBase newRoute = getOneRoute();
+        newRoute.setDestination("SFO");
+        newRoute.setOrigin("SFO");
+        HttpEntity<RouteDTOBase> request = new HttpEntity<>(newRoute);
+        try {
+            restTemplate.exchange(
+                    baseUrl,
+                    HttpMethod.POST,
+                    request,
+                    RouteDTO.class
+            );
+            fail("Expected a 400 response");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+            ErrorDTO errorResult = e.getResponseBodyAs(ErrorDTO.class);
+            assertNotNull(errorResult);
+            assertEquals(SAME_ORIGIN_DESTINATION, errorResult.getMessage());
+        }
+    }
+
+    @Test
+    @Order(7)
+    public void testMakeBadUpdate() {
+        String url = baseUrl + "/" + this.routeDTO.getId();
+        this.routeDTO.setOrigin("abcdefg");
+        HttpEntity<RouteDTO> putRequest = new HttpEntity<>(routeDTO);
+        try {
+            restTemplate.exchange(
+                    url,
+                    HttpMethod.PUT,
+                    putRequest,
+                    RouteDTO.class
+            );
+            fail("Expected a 400 response");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+            ErrorDTO errorResult = e.getResponseBodyAs(ErrorDTO.class);
+            assertNotNull(errorResult);
+            assertEquals("origin", errorResult.getValidationErrors().getFirst().getField());
+            assertEquals("Airport must be 3 letter IATA code", errorResult.getValidationErrors().getFirst().getError());
+        }
+    }
 }
