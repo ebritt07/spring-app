@@ -13,6 +13,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.UUID;
 
-import static org.example.testutil.TestUtil.getOneRoute;
+import static org.example.testutil.TestUtil.getOneRouteDTOBase;
 import static org.example.util.Constants.SAME_ORIGIN_DESTINATION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,6 +39,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class TestRouteControllerE2E {
 
     static UUID FAKE_UUID = UUID.randomUUID();
+    static String TEST_AIRPORT = "YYZ";
     final String baseUrl;
     final RestTemplate restTemplate;
     final RouteRepository routeRepository;
@@ -53,10 +56,6 @@ public class TestRouteControllerE2E {
         this.baseUrl = "http://localhost:" + port + contextPath + "/route";
     }
 
-    private void saveTestData(RouteDTO routeDTO) {
-        this.routeDTO = routeDTO;
-    }
-
 
     @BeforeAll
     public void setup() {
@@ -67,13 +66,13 @@ public class TestRouteControllerE2E {
     @Test
     @Order(1)
     public void addRoute() {
-        RouteDTOBase newRoute = getOneRoute();
+        RouteDTOBase newRoute = getOneRouteDTOBase();
         ResponseEntity<RouteDTO> postResponse = restTemplate.postForEntity(baseUrl, newRoute, RouteDTO.class);
         assertEquals(HttpStatus.OK, postResponse.getStatusCode());
         RouteDTO postResult = postResponse.getBody();
         assertNotNull(postResult);
         assertEquals(newRoute.getOrigin(), postResult.getOrigin());
-        saveTestData(postResult);
+        this.routeDTO = postResult;
     }
 
     @Test
@@ -92,7 +91,7 @@ public class TestRouteControllerE2E {
     @Order(3)
     public void testUpdateRoute() {
         String url = baseUrl + "/" + this.routeDTO.getId();
-        this.routeDTO.setOrigin("YYZ");
+        this.routeDTO.setOrigin(TEST_AIRPORT);
         HttpEntity<RouteDTO> putRequest = new HttpEntity<>(routeDTO);
         ResponseEntity<RouteDTO> putResponse = restTemplate.exchange(
                 url,
@@ -103,8 +102,8 @@ public class TestRouteControllerE2E {
         assertEquals(HttpStatus.OK, putResponse.getStatusCode());
         RouteDTO putResult = putResponse.getBody();
         assertNotNull(putResult);
-        assertEquals("YYZ", putResult.getOrigin());
-        saveTestData(putResult);
+        assertEquals(TEST_AIRPORT, putResult.getOrigin());
+        this.routeDTO = putResult;
     }
 
     @Test
@@ -139,7 +138,7 @@ public class TestRouteControllerE2E {
     @Test
     @Order(6)
     public void testSaveBadRoute() {
-        RouteDTOBase newRoute = getOneRoute();
+        RouteDTOBase newRoute = getOneRouteDTOBase();
         newRoute.setDestination("SFO");
         newRoute.setOrigin("SFO");
         HttpEntity<RouteDTOBase> request = new HttpEntity<>(newRoute);
@@ -180,5 +179,25 @@ public class TestRouteControllerE2E {
             assertEquals("origin", errorResult.getValidationErrors().getFirst().getField());
             assertEquals("Airport must be 3 letter IATA code", errorResult.getValidationErrors().getFirst().getError());
         }
+    }
+
+    @Test
+    @Order(8)
+    public void testGetRoutesByAirport() {
+        String url = baseUrl + "/airport/" + TEST_AIRPORT;
+        ResponseEntity<List<RouteDTO>> getResponse = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<>() {
+                }
+        );
+
+        assertEquals(HttpStatus.OK, getResponse.getStatusCode());
+        List<RouteDTO> getResult = getResponse.getBody();
+        assertNotNull(getResult);
+        assertEquals(1, getResult.size());
+        this.routeDTO.setOrigin(TEST_AIRPORT);
+        assertEquals(routeDTO, getResult.getFirst());
     }
 }
