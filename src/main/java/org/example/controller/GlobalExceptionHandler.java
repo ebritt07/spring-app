@@ -1,7 +1,8 @@
-package org.example.util;
+package org.example.controller;
 
 import org.example.dto.ErrorDTO;
 import org.example.dto.ValidationErrorDTO;
+import org.example.util.ServiceException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
