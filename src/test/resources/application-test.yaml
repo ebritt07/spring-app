@@ -4,6 +4,9 @@ server:
     context-path: /spring-app
 
 spring:
+  web:
+    resources:
+      add-mappings: false
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
