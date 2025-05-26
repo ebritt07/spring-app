@@ -10,7 +10,7 @@
 
 ### running locally
 
-- run TestApplication.java
+- run TestApication.java
 - test the API's using http://localhost:8445/spring-app/swagger-ui/index.html
 - inspect the local in memory DB getting updated using:
     - http://localhost:8445/spring-app/h2-console/
