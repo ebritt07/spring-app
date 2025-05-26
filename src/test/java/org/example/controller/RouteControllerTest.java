@@ -44,17 +44,17 @@ public class RouteControllerTest {
 
     @Test
     public void testGetRouteException() throws Exception {
-        when(airlineService.getRouteById(any(UUID.class))).thenThrow(new RuntimeException("some message"));
+        when(airlineService.getRouteById(any(UUID.class))).thenThrow(new RuntimeException("some error message"));
         UUID uuid = UUID.randomUUID();
         mockMvc.perform(MockMvcRequestBuilders.get("/route/{routeId}", uuid))
                 .andExpect(status().isInternalServerError())
-                .andExpect(content().json("{'error':'Internal Server Error', 'message':'some message'}"));
+                .andExpect(content().json("{'error':'Internal Server Error', 'message':'some error message'}"));
         Mockito.verify(airlineService, Mockito.times(1)).getRouteById(uuid);
         Mockito.verifyNoMoreInteractions(airlineService);
     }
 
     @Test
-    public void testGetRouteServiceException() throws Exception {
+    public void testServiceException() throws Exception {
         when(airlineService.getRouteById(any(UUID.class))).thenThrow(new ServiceException(HttpStatus.TOO_MANY_REQUESTS, "intruder alert..."));
         UUID uuid = UUID.randomUUID();
         mockMvc.perform(MockMvcRequestBuilders.get("/route/{routeId}", uuid))
@@ -62,5 +62,12 @@ public class RouteControllerTest {
                 .andExpect(content().json("{'error':'Too Many Requests', 'message':'intruder alert...'}"));
         Mockito.verify(airlineService, Mockito.times(1)).getRouteById(uuid);
         Mockito.verifyNoMoreInteractions(airlineService);
+    }
+
+    @Test
+    public void testBadUrl() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/route/foo/bar"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().json("{'error':'Not Found','message':'No endpoint GET /route/foo/bar.'}"));
     }
 }
