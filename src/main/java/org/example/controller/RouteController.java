@@ -27,12 +27,12 @@ import java.util.UUID;
 @Tag(name = "Airline Controller", description = "airline operations")
 @RequestMapping("/route")
 @Slf4j
-public class AirlineController {
+public class RouteController {
 
     private final AirlineService airlineService;
 
     @Autowired
-    public AirlineController(AirlineService airlineService) {
+    public RouteController(AirlineService airlineService) {
         this.airlineService = airlineService;
     }
 
