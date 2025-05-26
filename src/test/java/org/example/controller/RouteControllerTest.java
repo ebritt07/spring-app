@@ -68,6 +68,6 @@ public class RouteControllerTest {
     public void testBadUrl() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/route/foo/bar"))
                 .andExpect(status().isNotFound())
-                .andExpect(content().json("{'error':'Not Found','message':'No endpoint GET /spring-app/pong.'}"));
+                .andExpect(content().json("{'error':'Not Found','message':'No endpoint GET /route/foo/bar.'}"));
     }
 }
