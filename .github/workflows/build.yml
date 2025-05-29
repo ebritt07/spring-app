@@ -10,7 +10,7 @@ on:
   push:
     tags: [ v* ]
   pull_request:
-    branches: [ "master", "feature/*", "bugfix/*", "hotfix/*" ]
+    branches: [ "master" ]
 
 permissions:
   contents: write
