@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 public class RouteDTOBase {
     @JsonProperty
     @NotBlank(message = "aircraft is required")
+    @Pattern(regexp = "^[A-Z0-9]{1,10}$", message = "Aircraft must be ICAO code")
     String aircraft;
 
     @JsonProperty
