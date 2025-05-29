@@ -9,6 +9,7 @@ env:
 on:
   push:
     tags: [ v* ]
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
@@ -147,10 +148,14 @@ jobs:
 
       - name: Build and Push Docker image to ECR
         run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            REF="${{ github.event.pull_request.head.ref }}"
+          else
+            REF="${{ github.ref_name }}"
+          fi
           ACCT_ID=${{ env.DEV_AWS_ACCOUNT_ID }}
           REGION=${{ env.DEV_AWS_REGION }}
           REPO=${{ github.repository }}
-          VERSION=${{ github.ref_name }}
-          IMAGE_URI=${ACCT_ID}.dkr.ecr.${REGION}.amazonaws.com/${REPO}:${VERSION}
+          IMAGE_URI=${ACCT_ID}.dkr.ecr.${REGION}.amazonaws.com/${REPO}:${REF}
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
