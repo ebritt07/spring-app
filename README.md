@@ -15,3 +15,8 @@
 - inspect the local in memory DB getting updated using:
     - http://localhost:8445/spring-app/h2-console/
         - use the url and login info supplied in application.yaml
+
+### deployment
+
+- on pull requests to master, the app will be dockerized and pushed to ECR with tag name as the source branch
+- on pushes to master or tags, the ecr version is the branch name
