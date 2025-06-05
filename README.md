@@ -19,4 +19,13 @@
 ### deployment
 
 - on pull requests to master, the app will be dockerized and pushed to ECR with tag name as the source branch
-- on pushes to master or tags, the ecr version is the branch name
+- on pushes to master or tags, the ecr version is master or the tag
+- can also manually docker push on master branch
+
+### dockerizing
+
+- verify dockerization works by running:
+  - `mvn package`
+  - `docker build -t spring-app .`
+  - `docker run -p 3000:8445 spring-app`
+- now, docker passes forwards from port 3000 to 8445. test the apis with: http://localhost:3000/spring-app/swagger-ui/index.html
