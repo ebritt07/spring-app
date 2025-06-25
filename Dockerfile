@@ -10,7 +10,7 @@ EXPOSE 8445
 # The application's jar file (built by Maven or Gradle)
 ARG JAR_FILE=target/*.jar
 
-# Copy the jar file into the container
+# Copy the jar file into the containerm
 COPY ${JAR_FILE} app.jar
 
 # Run the Spring Boot application
