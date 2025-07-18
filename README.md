@@ -25,7 +25,8 @@
 ### dockerizing
 
 - verify dockerization works by running:
-  - `mvn package`
-  - `docker build -t spring-app .`
-  - `docker run -p 3000:8445 spring-app`
-- now, docker passes forwards from port 3000 to 8445. test the apis with: http://localhost:3000/spring-app/swagger-ui/index.html
+    - `mvn package`
+    - `docker build -t spring-app .`
+    - `docker run -p 3000:8445 spring-app`
+- now, docker passes forwards from port 3000 to 8445. test the apis
+  with: http://localhost:3000/spring-app/swagger-ui/index.html
