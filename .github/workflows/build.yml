@@ -23,7 +23,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -33,7 +33,7 @@ jobs:
           cache: maven
 
       - name: Checkout badges branch to a badges directory
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: badges
           path: badges
@@ -128,7 +128,7 @@ jobs:
     needs: build
     environment: dev
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Download JAR artifact
         uses: actions/download-artifact@v4
